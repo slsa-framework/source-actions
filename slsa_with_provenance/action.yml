@@ -129,7 +129,7 @@ runs:
       name: store git note
 
     - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2
-      if: always()
+      if: success() && (steps.handle_branch_push.outcome == 'success' || steps.handle_tag_push.outcome == 'success')
       with:
         name: prov_metadata
         path: ./metadata/
