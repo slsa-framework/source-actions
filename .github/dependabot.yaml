@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: The SLSA Authors
+# SPDX-License-Identifier: Apache-2.0
+---
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directories:
+      - "get_note/"
+      - "slsa_with_provenance/"
+      - "store_note/"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 10
+    groups:
+      actions:
+        update-types:
+          - "minor"
+          - "patch"
