@@ -78,7 +78,7 @@ runs:
 
     - id: verify_binary
       if: inputs.build-from-source == 'false'
-      uses: carabiner-dev/actions/ampel/verify@HEAD
+      uses: carabiner-dev/actions/ampel/verify@145994cca491bc2982405de73041b8ff197e8e35 # v1.0.0 
       env:
         # This is the SLSA builder ID we will verify before running the sourcetool binary
         AMPEL_BUILDERID: "https://github.com/slsa-framework/source-tool/.github/workflows/release.yaml"
