@@ -16,6 +16,11 @@ inputs:
     required: false
     default: false
 
+  use_local_policy:
+    description: 'Use local source policy'
+    required: false
+    default: ""
+
   version:
     description: "sourcetool version to use"
     required: true
@@ -98,6 +103,7 @@ runs:
           --commit ${{ github.sha }} --owner ${{ github.repository_owner }} \
           --repo ${{ github.event.repository.name }} --branch ${{ github.ref_name }} \
           --allow-merge-commits="${{ inputs.allow-merge-commits }}" \
+          --use_local_policy="${{ inputs.use_local_policy }}" \
           --output_signed_bundle ${{ github.workspace }}/metadata/signed_bundle.intoto.jsonl >> $GITHUB_STEP_SUMMARY
       shell: bash
       env:
