@@ -94,6 +94,21 @@ runs:
         policy: "git+https://github.com/carabiner-dev/policies#slsa/builderid-base.json"
         signer: "sigstore(regexp)::https://token.actions.githubusercontent.com::https://github.com/slsa-framework/source-tool/.github/workflows/release.yaml@.*"
     
+    # Attestations are pushed to the repository's git notes when sourcetool
+    # supports it: v0.7.0 and above or any build from source.
+    - id: configure_push
+      name: Configure attestation push
+      shell: bash
+      run: |
+        PUSH_FLAG=""
+        MIN_PUSH_VERSION="v0.7.0"
+        if [ "${{ inputs.build-from-source }}" = "true" ]; then
+          PUSH_FLAG="--push=note"
+        elif [ "$(printf '%s\n%s\n' "$MIN_PUSH_VERSION" "${{ inputs.version }}" | sort -V | head -n1)" = "$MIN_PUSH_VERSION" ]; then
+          PUSH_FLAG="--push=note"
+        fi
+        echo "push_flag=${PUSH_FLAG}" >> "$GITHUB_OUTPUT"
+
     - id: handle_branch_push
       name: Generate attestations
       if: ${{ startsWith(github.ref, 'refs/heads/') }}
@@ -104,7 +119,7 @@ runs:
           --commit ${{ github.sha }} --owner ${{ github.repository_owner }} \
           --repo ${{ github.event.repository.name }} --branch ${{ github.ref_name }} \
           --allow-merge-commits="${{ inputs.allow-merge-commits }}" \
-          ${{ inputs.build-from-source == 'true' && '--push=note' || '' }} \
+          ${{ steps.configure_push.outputs.push_flag }} \
           --output_signed_bundle ${{ github.workspace }}/metadata/signed_bundle.intoto.jsonl >> $GITHUB_STEP_SUMMARY
       shell: bash
       env:
@@ -119,7 +134,7 @@ runs:
           --commit ${{ github.sha }} --owner ${{ github.repository_owner }} \
           --repo ${{ github.event.repository.name }} --tag_name ${{ github.ref_name }} \
           --actor ${{github.triggering_actor}} \
-          ${{ inputs.build-from-source == 'true' && '--push=note' || '' }} \
+          ${{ steps.configure_push.outputs.push_flag }} \
           --output_signed_bundle ${{ github.workspace }}/metadata/signed_bundle.intoto.jsonl >> $GITHUB_STEP_SUMMARY
       shell: bash
       env:
