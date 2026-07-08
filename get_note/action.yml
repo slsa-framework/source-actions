@@ -6,7 +6,7 @@ description: Gets data from the git note and stores it in the provided path.
 inputs:
   commit:
     description: 'Commit to read note data from'
-    requried: true
+    required: true
   path:
     description: 'File with the data to add to the note'
     required: true
@@ -15,7 +15,11 @@ runs:
   using: "Composite"
   steps:
     - id: read_from_note
+      # Inputs are passed through the environment and quoted to avoid shell injection.
       run: |
           git fetch origin "refs/notes/*:refs/notes/*"
-          git notes show ${{ inputs.commit }} >> ${{ inputs.path }} || echo "" >> ${{ inputs.path }}
+          git notes show "${COMMIT}" >> "${NOTE_PATH}" || echo "" >> "${NOTE_PATH}"
       shell: bash
+      env:
+        COMMIT: ${{ inputs.commit }}
+        NOTE_PATH: ${{ inputs.path }}

@@ -12,10 +12,14 @@ runs:
   using: "Composite"
   steps:
     - id: store_in_note
+      # Inputs are passed through the environment and quoted to avoid shell injection.
       run: |
-          git config user.name "${{ github.actor }}"
-          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          git config user.name "${ACTOR}"
+          git config user.email "${ACTOR}@users.noreply.github.com"
           git fetch origin "refs/notes/*:refs/notes/*"
-          git notes append -F ${{ inputs.path }}
+          git notes append -F "${NOTE_PATH}"
           git push origin "refs/notes/*"
       shell: bash
+      env:
+        ACTOR: ${{ github.actor }}
+        NOTE_PATH: ${{ inputs.path }}
