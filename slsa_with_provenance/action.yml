@@ -104,7 +104,7 @@ runs:
           --commit ${{ github.sha }} --owner ${{ github.repository_owner }} \
           --repo ${{ github.event.repository.name }} --branch ${{ github.ref_name }} \
           --allow-merge-commits="${{ inputs.allow-merge-commits }}" \
-          ${{ inputs.build-from-source == 'true' && '--push=notes' || '' }} \
+          ${{ inputs.build-from-source == 'true' && '--push=note' || '' }} \
           --output_signed_bundle ${{ github.workspace }}/metadata/signed_bundle.intoto.jsonl >> $GITHUB_STEP_SUMMARY
       shell: bash
       env:
@@ -119,7 +119,7 @@ runs:
           --commit ${{ github.sha }} --owner ${{ github.repository_owner }} \
           --repo ${{ github.event.repository.name }} --tag_name ${{ github.ref_name }} \
           --actor ${{github.triggering_actor}} \
-          ${{ inputs.build-from-source == 'true' && '--push=notes' || '' }} \
+          ${{ inputs.build-from-source == 'true' && '--push=note' || '' }} \
           --output_signed_bundle ${{ github.workspace }}/metadata/signed_bundle.intoto.jsonl >> $GITHUB_STEP_SUMMARY
       shell: bash
       env:
