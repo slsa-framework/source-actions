@@ -175,6 +175,10 @@ runs:
         cat ${{ github.workspace }}/metadata/signed_bundle.intoto.jsonl >> $GITHUB_STEP_SUMMARY
       shell: bash
 
+    # Legacy note storage: only runs when sourcetool did NOT push the note
+    # itself (i.e. when the --push=note flag was not passed). Newer sourcetool
+    # versions store the git note natively, so running this too would append a
+    # duplicate attestation to refs/notes.
     - run: |
           git config user.name "${ACTOR}"
           git config user.email "${ACTOR}@users.noreply.github.com"
@@ -183,6 +187,7 @@ runs:
           git push origin "refs/notes/*"
       shell: bash
       name: store git note
+      if: steps.configure_push.outputs.push_flag == ''
       env:
         ACTOR: ${{ github.actor }}
 
